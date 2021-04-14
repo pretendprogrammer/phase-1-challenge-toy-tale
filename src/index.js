@@ -1,5 +1,4 @@
 let addToy = false;
-const objectInMemory = {}
 
 const addBtn = document.querySelector("#new-toy-btn")
 const toyFormContainer = document.querySelector(".container")
@@ -31,7 +30,8 @@ function createNewCard(toyObj) {
   let newParagragh = document.createElement('p')
   let newHeader = document.createElement("h2")
   let newButton = document.createElement("button")
-
+  
+  newParagragh.innerText = `${toyObj.likes} Likes`
   newDiv.className = "card"
   newHeader.innerText = toyObj.name
   newImg.src = toyObj.image
@@ -39,13 +39,7 @@ function createNewCard(toyObj) {
   newButton.className = "like-btn"
   newButton.id = toyObj.id
   newButton.innerText = 'Like'
-  newParagragh.innerText = `${toyObj.likes} Likes`
-  newDiv.append(newHeader)
-  newDiv.append(newImg)
-  newDiv.append(newParagragh)
-  newDiv.append(newButton)
-  toysContainer.append(newDiv)
-
+  
   newButton.addEventListener('click', function(){
     let newlikeCount = toyObj.likes + 1
     let configObject = {
@@ -59,12 +53,19 @@ function createNewCard(toyObj) {
       })
     }
     fetch(`http://localhost:3000/toys/${toyObj.id}`, configObject)
-      .then(response => response.json())
-      .then(updatedObject => {
-        toyObj.likes = updatedObject.likes
-        newParagragh.innerText = `${updatedObject.likes} Likes`
-      })
+    .then(response => response.json())
+    .then(updatedObject => {
+      toyObj.likes = updatedObject.likes
+      newParagragh.innerText = `${updatedObject.likes} Likes`
+    })
   })
+
+  newDiv.append(newHeader)
+  newDiv.append(newImg)
+  newDiv.append(newParagragh)
+  newDiv.append(newButton)
+
+  toysContainer.append(newDiv)
 }
 
 const toyForm = document.querySelector('.add-toy-form')
