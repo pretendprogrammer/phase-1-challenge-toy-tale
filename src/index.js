@@ -26,44 +26,39 @@ fetch("http://localhost:3000/toys")
 
 function createNewCard(toyObj) {
   let newDiv = document.createElement('div')
+    newDiv.className = "card"
   let newImg = document.createElement('img')
+    newImg.src = toyObj.image
+    newImg.className = "toy-avatar"
   let newParagragh = document.createElement('p')
+    newParagragh.innerText = `${toyObj.likes} Likes`
   let newHeader = document.createElement("h2")
+    newHeader.innerText = toyObj.name
   let newButton = document.createElement("button")
-  
-  newParagragh.innerText = `${toyObj.likes} Likes`
-  newDiv.className = "card"
-  newHeader.innerText = toyObj.name
-  newImg.src = toyObj.image
-  newImg.className = "toy-avatar"
-  newButton.className = "like-btn"
-  newButton.id = toyObj.id
-  newButton.innerText = 'Like'
-  
-  newButton.addEventListener('click', function(){
-    let newlikeCount = toyObj.likes + 1
-    let configObject = {
-      method: 'PATCH',
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json"
-      },
-      body: JSON.stringify({
-        'likes': newlikeCount
+    newButton.className = "like-btn"
+    newButton.dataset = toyObj.id
+    newButton.innerText = 'Like <3'
+    newButton.addEventListener('click', function(){
+      let newlikeCount = toyObj.likes + 1
+      let configObject = {
+        method: 'PATCH',
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json"
+        },
+        body: JSON.stringify({
+          'likes': newlikeCount
+        })
+      }
+      fetch(`http://localhost:3000/toys/${toyObj.id}`, configObject)
+      .then(response => response.json())
+      .then(updatedObject => {
+        toyObj.likes = updatedObject.likes
+        newParagragh.innerText = `${updatedObject.likes} Likes`
       })
-    }
-    fetch(`http://localhost:3000/toys/${toyObj.id}`, configObject)
-    .then(response => response.json())
-    .then(updatedObject => {
-      toyObj.likes = updatedObject.likes
-      newParagragh.innerText = `${updatedObject.likes} Likes`
     })
-  })
 
-  newDiv.append(newHeader)
-  newDiv.append(newImg)
-  newDiv.append(newParagragh)
-  newDiv.append(newButton)
+  newDiv.append(newHeader, newImg, newParagragh, newButton)
 
   toysContainer.append(newDiv)
 }
